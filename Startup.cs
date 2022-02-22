@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace WebAPI__.NET_Core_JWT_User_Role_Authorization
 {
@@ -24,6 +27,24 @@ namespace WebAPI__.NET_Core_JWT_User_Role_Authorization
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Add Authentication Service
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["JWT:Issuer"],
+                        ValidAudience = Configuration["JWT:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Key"])
+            
+               
+                    };
+                });
+            services.AddMvc();
             services.AddControllers();
         }
 
@@ -37,6 +58,8 @@ namespace WebAPI__.NET_Core_JWT_User_Role_Authorization
 
             app.UseRouting();
 
+
+            // Add useAuthorization Capability
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
