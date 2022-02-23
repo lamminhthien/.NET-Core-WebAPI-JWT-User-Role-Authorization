@@ -18,12 +18,13 @@ namespace WebAPI__.NET_Core_JWT_User_Role_Authorization.Controllers
     public class UserController : ControllerBase
     {
 
+        //Tạo route có kèm xác thực và phân quyền (admin)
         [HttpGet("Admins")]
         [Authorize(Roles = "admin")]
         public IActionResult AdminsEndpoint()
         {
-            //var currentUser = Ge
-            return Ok();
+            var currentUser = GetCurrentUserFromJWT_Client();
+            return Ok($"Hi {currentUser.Fullname}, you are an {currentUser.Role}");
         }
 
 
@@ -43,8 +44,9 @@ namespace WebAPI__.NET_Core_JWT_User_Role_Authorization.Controllers
                 return new UserInfo
                 {
                     Username = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value,
-                    EmailAddress = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value,
-                    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
+                    Fullname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value,
+                    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value,
+                    EmailAddress = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value
                 };
             }
             return null;
