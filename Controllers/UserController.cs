@@ -24,9 +24,29 @@ namespace WebAPI__.NET_Core_JWT_User_Role_Authorization.Controllers
         public IActionResult AdminsEndpoint()
         {
             var currentUser = GetCurrentUserFromJWT_Client();
-            return Ok($"Hi {currentUser.Fullname}, you are an {currentUser.Role}");
+
+            return (currentUser != null ?
+                Ok($"Hi {currentUser.Fullname}, you are an {currentUser.Role}") : Ok($"This is not for you")
+            );
         }
 
+        //Tạo route có kèm xác thực và phân quyền (seller) và (admin)
+        [HttpGet("Seller")]
+        [Authorize(Roles = "admin,selller")]
+        public IActionResult AdminsAndSellersEndpoint()
+        {
+            var currentUser = GetCurrentUserFromJWT_Client();
+                  return (currentUser != null ?
+                Ok($"Hi {currentUser.Fullname}, you are an {currentUser.Role}") : Ok($"This is not for you")
+            );
+        }
+
+        //Thử tạo route public, không cần phân quyền
+        [HttpGet("Public")]
+        public IActionResult Public()
+        {
+            return Ok("You are on public");
+        }
 
         // Hàm đọc Token JWT vừa được tạo ra và lưu bên LocalStorage của web browser client
         public UserInfo GetCurrentUserFromJWT_Client()
@@ -39,7 +59,7 @@ namespace WebAPI__.NET_Core_JWT_User_Role_Authorization.Controllers
             {
                 //Lấy mảng thông tin định danh người dùng
                 var userClaims = identity.Claims;
-                
+
                 // Lọc ra các dữ liệu, lưu vào UserInfo Object
                 return new UserInfo
                 {
