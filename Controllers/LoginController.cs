@@ -36,10 +36,10 @@ namespace WebAPI__.NET_Core_JWT_User_Role_Authorization.Controllers
             //Khi user có tồn tại, tiến hành tạo token
             if (user != null)
             {
-                var token =
+                var token = GenerateJWT_Token(user);
                     return Ok(token);
             }
-            return Ok();
+            return NotFound("User not found");
 
         }
         //Kiểm tra dữ liệu nhập vào so sánh với Database simulator (UserList)
