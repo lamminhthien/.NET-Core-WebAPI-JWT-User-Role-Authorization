@@ -46,7 +46,7 @@ namespace WebAPI__.NET_Core_JWT_User_Role_Authorization.Controllers
         private UserInfo Authenticate(UserAuthorize userAuthorize)
         {
             // Kiểm tra với database simulator (UserInfo)
-            var currentUser = UserList.Users.FirstOrDefault(o => o.Username.ToLower() == userAuthorize.Username.ToLower() && o.Password == userAuthorize.Password);
+            var currentUser = UserInfoList.Users.FirstOrDefault(o => o.Username.ToLower() == userAuthorize.Username.ToLower() && o.Password == userAuthorize.Password);
             
             //Trả về thông tin của user hiện tại khi đăng nhập thành công
             if (currentUser != null)
